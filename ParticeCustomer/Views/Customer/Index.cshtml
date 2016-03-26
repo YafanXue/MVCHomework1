@@ -10,7 +10,7 @@
     @Html.ActionLink("Create New", "Create")
     @using (Html.BeginForm("Index", "Customer"))
     {
-        <input type="text" name="Keyword" />
+        @Html.DisplayNameFor(model => model.客戶名稱) @Html.Label(":") <input type="text" name="Keyword" />
         <input type="submit" value="Search">
     }
 </p>

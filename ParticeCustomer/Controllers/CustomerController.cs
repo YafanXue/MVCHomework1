@@ -15,7 +15,7 @@ namespace ParticeCustomer.Controllers
         // GET: Customer
         public ActionResult Index(string Keyword)
         {
-            var data = db.客戶資料.ToList();
+            var data = db.客戶資料.Where(p => p.已刪除 == false).ToList();
             if (!string.IsNullOrEmpty(Keyword))
             {
                 data = db.客戶資料.Where(p => p.客戶名稱.Contains(Keyword)).ToList();
@@ -54,6 +54,7 @@ namespace ParticeCustomer.Controllers
             if (ModelState.IsValid)
             {
                 // TODO: Add insert logic here
+                客戶.已刪除 = false;
                 db.客戶資料.Add(客戶);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -81,6 +82,7 @@ namespace ParticeCustomer.Controllers
             if (ModelState.IsValid)
             {
                 // TODO: Add update logic here
+                客戶.已刪除 = false;
                 客戶.Id = id;
                 db.Entry(客戶).State = EntityState.Modified;
                 db.SaveChanges();
@@ -107,8 +109,14 @@ namespace ParticeCustomer.Controllers
             try
             {
                 // TODO: Add delete logic here
-                var target = db.客戶資料.Find(id);
-                db.客戶資料.Remove(target);
+                //var target = db.客戶資料.Find(id);
+                //db.客戶資料.Remove(target);
+
+                var target = db.客戶資料.FirstOrDefault(p => p.Id == id);
+                if (target == null)
+                    return HttpNotFound();
+                target.已刪除 = true;
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

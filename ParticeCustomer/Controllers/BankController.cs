@@ -21,6 +21,7 @@ namespace ParticeCustomer.Controllers
             {
                 data = data.Where(p => p.帳戶名稱.Contains(Keyword) || p.銀行名稱.Contains(Keyword)).ToList();
             }
+
             return View(data);
 
         }
