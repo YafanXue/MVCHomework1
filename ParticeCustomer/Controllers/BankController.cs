@@ -88,6 +88,7 @@ namespace ParticeCustomer.Controllers
             {
                 // TODO: Add update logic here
                 銀行.Id = id;
+                銀行.已刪除 = false;
                 db.Entry(銀行).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
