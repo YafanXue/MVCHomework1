@@ -30,5 +30,7 @@ namespace ParticeCustomer.Models
         public virtual DbSet<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual DbSet<客戶聯絡人> 客戶聯絡人 { get; set; }
         public virtual DbSet<CUSView> CUSView { get; set; }
+        public virtual DbSet<CustsExcelView> CustsExcelView { get; set; }
+        public virtual DbSet<客戶分類資訊> 客戶分類資訊 { get; set; }
     }
 }

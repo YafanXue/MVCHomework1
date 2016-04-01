@@ -10,16 +10,15 @@ using System.Web.Mvc;
 
 namespace ParticeCustomer.Controllers
 {
-    public class BankController : Controller
+    public class BankController : BaseController
     {
-        客戶資料Entities db = new 客戶資料Entities();
         // GET: Back
         public ActionResult Index(string Keyword)
         {
-            var data = db.客戶銀行資訊.Where(p => p.已刪除 == false).ToList();
+            var data = repoBank.All();
             if (!string.IsNullOrEmpty(Keyword))
             {
-                data = data.Where(p => p.帳戶名稱.Contains(Keyword) || p.銀行名稱.Contains(Keyword)).ToList();
+                data = repoBank.Search(Keyword);
             }
 
             return View(data);
@@ -31,7 +30,7 @@ namespace ParticeCustomer.Controllers
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            var data = db.客戶銀行資訊.Find(id);
+            var data = repoBank.Find(id.Value);
             if (data == null)
                 return new HttpNotFoundResult("no this detail");
             return View(data);
@@ -40,12 +39,13 @@ namespace ParticeCustomer.Controllers
         // GET: Back/Create
         public ActionResult Create()
         {
-            var custs = db.客戶資料.ToList();
-            List<SelectListItem> items = new List<SelectListItem>();
-            foreach(var cus in custs)
-            {
-                items.Add(new SelectListItem() { Text = cus.客戶名稱, Value = cus.Id.ToString() });
-            }
+            //var custs = db.客戶資料.ToList();
+            //List<SelectListItem> items = new List<SelectListItem>();
+            //foreach(var cus in custs)
+            //{
+            //    items.Add(new SelectListItem() { Text = cus.客戶名稱, Value = cus.Id.ToString() });
+            //}
+            var items=repoBank.GetCustomerList();
             ViewBag.CustomerList = items;
             return View();
         }
@@ -54,15 +54,14 @@ namespace ParticeCustomer.Controllers
         [HttpPost]
         public ActionResult Create([Bind(Include = "客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 銀行)
         {
-            
-                // TODO: Add insert logic here
-                if (ModelState.IsValid)
-                {
-                銀行.已刪除 = false;
-                    db.客戶銀行資訊.Add(銀行);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
+
+            // TODO: Add insert logic here
+            if (ModelState.IsValid)
+            {
+                repoBank.Add(銀行);
+                repoBank.UnitOfWork.Commit();
+                return RedirectToAction("Index");
+            }
             
             
                 return View(銀行);
@@ -74,7 +73,7 @@ namespace ParticeCustomer.Controllers
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            var data = db.客戶銀行資訊.Find(id);
+            var data = repoBank.Find(id.Value);
             if (data == null)
                 return HttpNotFound();
             return View(data);
@@ -82,15 +81,14 @@ namespace ParticeCustomer.Controllers
 
         // POST: Back/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, [Bind(Include = "客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 銀行)
+        public ActionResult Edit(int id, [Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 銀行)
         {
             if(ModelState.IsValid)
             {
                 // TODO: Add update logic here
-                銀行.Id = id;
-                銀行.已刪除 = false;
-                db.Entry(銀行).State = EntityState.Modified;
-                db.SaveChanges();
+                var db銀行 = repoBank.UnitOfWork.Context;
+                db銀行.Entry(銀行).State = EntityState.Modified;
+                repoBank.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
             
@@ -103,7 +101,7 @@ namespace ParticeCustomer.Controllers
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            var data = db.客戶銀行資訊.Find(id);
+            var data = repoBank.Find(id.Value);
             if (data == null)
                 return HttpNotFound();
             return View(data);
@@ -116,11 +114,10 @@ namespace ParticeCustomer.Controllers
             try
             {
                 // TODO: Add delete logic here
-                var target = db.客戶銀行資訊.FirstOrDefault(p => p.Id == id);
-                if (target == null)
-                    return HttpNotFound();
-                target.已刪除 = true;
-                db.SaveChanges();
+                客戶銀行資訊 bankdata = repoBank.Find(id);
+                repoBank.Delete(bankdata);
+                repoBank.UnitOfWork.Commit();
+                
             }
             catch(DbEntityValidationException ex)
             {

@@ -15,6 +15,13 @@
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
+        <EntityType Name="客戶分類資訊">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="分類名稱" Type="nvarchar" MaxLength="300" />
+        </EntityType>
         <EntityType Name="客戶資料">
           <Key>
             <PropertyRef Name="Id" />
@@ -26,7 +33,8 @@
           <Property Name="傳真" Type="nvarchar" MaxLength="50" />
           <Property Name="地址" Type="nvarchar" MaxLength="100" />
           <Property Name="Email" Type="nvarchar" MaxLength="250" />
-          <Property Name="已刪除" Type="bit" />
+          <Property Name="已刪除" Type="bit" Nullable="false" />
+          <Property Name="客戶分類" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="客戶銀行資訊">
           <Key>
@@ -39,7 +47,7 @@
           <Property Name="分行代碼" Type="int" />
           <Property Name="帳戶名稱" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="帳戶號碼" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="已刪除" Type="bit" />
+          <Property Name="已刪除" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="客戶聯絡人">
           <Key>
@@ -52,7 +60,28 @@
           <Property Name="Email" Type="nvarchar" MaxLength="250" Nullable="false" />
           <Property Name="手機" Type="nvarchar" MaxLength="50" />
           <Property Name="電話" Type="nvarchar" MaxLength="50" />
-          <Property Name="已刪除" Type="bit" />
+          <Property Name="已刪除" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--產生期間發現錯誤:
+警告 6002: 資料表/檢視 'D:\TEAMPROJECT\PARTICECUSTOMER\PARTICECUSTOMER\APP_DATA\客戶資料.MDF.dbo.CustsExcelView' 未定義主索引鍵。已推斷此索引鍵，並將定義建立成唯讀的資料表/檢視。-->
+        <EntityType Name="CustsExcelView">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="客戶名稱" />
+            <PropertyRef Name="統一編號" />
+            <PropertyRef Name="電話" />
+            <PropertyRef Name="已刪除" />
+            <PropertyRef Name="客戶分類" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="客戶名稱" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="統一編號" Type="char" MaxLength="8" Nullable="false" />
+          <Property Name="電話" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="傳真" Type="nvarchar" MaxLength="50" />
+          <Property Name="地址" Type="nvarchar" MaxLength="100" />
+          <Property Name="Email" Type="nvarchar" MaxLength="250" />
+          <Property Name="已刪除" Type="bit" Nullable="false" />
+          <Property Name="客戶分類" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <!--產生期間發現錯誤:
 警告 6002: 資料表/檢視 'D:\TEAMPROJECT\PARTICECUSTOMER\PARTICECUSTOMER\APP_DATA\客戶資料.MDF.dbo.CUSView' 未定義主索引鍵。已推斷此索引鍵，並將定義建立成唯讀的資料表/檢視。-->
@@ -90,9 +119,23 @@
         </Association>
         <EntityContainer Name="客戶資料ModelStoreContainer">
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="客戶分類資訊" EntityType="Self.客戶分類資訊" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="客戶資料" EntityType="Self.客戶資料" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="客戶銀行資訊" EntityType="Self.客戶銀行資訊" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="客戶聯絡人" EntityType="Self.客戶聯絡人" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustsExcelView" EntityType="Self.CustsExcelView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [CustsExcelView].[Id] AS [Id], 
+    [CustsExcelView].[客戶名稱] AS [客戶名稱], 
+    [CustsExcelView].[統一編號] AS [統一編號], 
+    [CustsExcelView].[電話] AS [電話], 
+    [CustsExcelView].[傳真] AS [傳真], 
+    [CustsExcelView].[地址] AS [地址], 
+    [CustsExcelView].[Email] AS [Email], 
+    [CustsExcelView].[已刪除] AS [已刪除], 
+    [CustsExcelView].[客戶分類] AS [客戶分類]
+    FROM [dbo].[CustsExcelView] AS [CustsExcelView]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="CUSView" EntityType="Self.CUSView" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [CUSView].[客戶名稱] AS [客戶名稱], 
@@ -136,7 +179,8 @@
           <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="客戶銀行資訊" Relationship="Self.FK_客戶銀行資訊_客戶資料" FromRole="客戶資料" ToRole="客戶銀行資訊" />
           <NavigationProperty Name="客戶聯絡人" Relationship="Self.FK_客戶聯絡人_客戶資料" FromRole="客戶資料" ToRole="客戶聯絡人" />
-          <Property Name="已刪除" Type="Boolean" />
+          <Property Name="已刪除" Type="Boolean" Nullable="false" />
+          <Property Name="客戶分類" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
         </EntityType>
         <EntityType Name="客戶銀行資訊">
           <Key>
@@ -150,7 +194,7 @@
           <Property Name="帳戶名稱" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="帳戶號碼" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="客戶資料" Relationship="Self.FK_客戶銀行資訊_客戶資料" FromRole="客戶銀行資訊" ToRole="客戶資料" />
-          <Property Name="已刪除" Type="Boolean" />
+          <Property Name="已刪除" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="客戶聯絡人">
           <Key>
@@ -164,7 +208,7 @@
           <Property Name="手機" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="電話" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="客戶資料" Relationship="Self.FK_客戶聯絡人_客戶資料" FromRole="客戶聯絡人" ToRole="客戶資料" />
-          <Property Name="已刪除" Type="Boolean" />
+          <Property Name="已刪除" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_客戶銀行資訊_客戶資料">
           <End Role="客戶資料" Type="Self.客戶資料" Multiplicity="1" />
@@ -204,6 +248,8 @@
             <End Role="客戶聯絡人" EntitySet="客戶聯絡人" />
           </AssociationSet>
           <EntitySet Name="CUSView" EntityType="客戶資料Model.CUSView" />
+          <EntitySet Name="CustsExcelView" EntityType="客戶資料Model.CustsExcelView" />
+          <EntitySet Name="客戶分類資訊" EntityType="客戶資料Model.客戶分類資訊" />
         </EntityContainer>
         <EntityType Name="CUSView">
           <Key>
@@ -212,6 +258,32 @@
           <Property Name="客戶名稱" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="銀行帳戶數量" Type="Int32" />
           <Property Name="聯絡人數量" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CustsExcelView">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="客戶名稱" />
+            <PropertyRef Name="統一編號" />
+            <PropertyRef Name="電話" />
+            <PropertyRef Name="已刪除" />
+            <PropertyRef Name="客戶分類" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="客戶名稱" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="統一編號" Type="String" Nullable="false" MaxLength="8" FixedLength="true" Unicode="false" />
+          <Property Name="電話" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="傳真" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="地址" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="已刪除" Type="Boolean" Nullable="false" />
+          <Property Name="客戶分類" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="客戶分類資訊">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="分類名稱" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -233,6 +305,7 @@
           <EntitySetMapping Name="客戶資料">
             <EntityTypeMapping TypeName="客戶資料Model.客戶資料">
               <MappingFragment StoreEntitySet="客戶資料">
+                <ScalarProperty Name="客戶分類" ColumnName="客戶分類" />
                 <ScalarProperty Name="已刪除" ColumnName="已刪除" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="客戶名稱" ColumnName="客戶名稱" />
@@ -278,6 +351,29 @@
                 <ScalarProperty Name="聯絡人數量" ColumnName="聯絡人數量" />
                 <ScalarProperty Name="銀行帳戶數量" ColumnName="銀行帳戶數量" />
                 <ScalarProperty Name="客戶名稱" ColumnName="客戶名稱" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustsExcelView">
+            <EntityTypeMapping TypeName="客戶資料Model.CustsExcelView">
+              <MappingFragment StoreEntitySet="CustsExcelView">
+                <ScalarProperty Name="客戶分類" ColumnName="客戶分類" />
+                <ScalarProperty Name="已刪除" ColumnName="已刪除" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="地址" ColumnName="地址" />
+                <ScalarProperty Name="傳真" ColumnName="傳真" />
+                <ScalarProperty Name="電話" ColumnName="電話" />
+                <ScalarProperty Name="統一編號" ColumnName="統一編號" />
+                <ScalarProperty Name="客戶名稱" ColumnName="客戶名稱" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="客戶分類資訊">
+            <EntityTypeMapping TypeName="客戶資料Model.客戶分類資訊">
+              <MappingFragment StoreEntitySet="客戶分類資訊">
+                <ScalarProperty Name="分類名稱" ColumnName="分類名稱" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -11,20 +11,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ParticeCustomer.Controllers
 {
-    public class ContactController : Controller
-    {
-        private 客戶資料Entities db = new 客戶資料Entities();
-
+    public class ContactController : BaseController
+    {        
         // GET: Contact
         public ActionResult Index(string Keyword)
         {
-            var data = db.客戶聯絡人.Include(客 => 客.客戶資料).Where(p=>p.已刪除== false);
-
+            var data = repoContact.All();
             if (!string.IsNullOrEmpty(Keyword))
             {
-                data=data.Where(p => p.姓名.Contains(Keyword));
-                
-            }
+                data = repoContact.All().Where(p => p.姓名.Contains(Keyword));
+            }            
             return View(data);
 
         }
@@ -38,7 +34,7 @@ namespace ParticeCustomer.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            客戶聯絡人 客戶聯絡人 = repoContact.Find(id.Value);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -49,7 +45,7 @@ namespace ParticeCustomer.Controllers
         // GET: Contact/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(repoCustomer.All(), "Id", "客戶名稱");
             return View();
         }
 
@@ -63,13 +59,12 @@ namespace ParticeCustomer.Controllers
             
             if (ModelState.IsValid)
             {
-                客戶聯絡人.已刪除 = false;
-                db.客戶聯絡人.Add(客戶聯絡人);
-                db.SaveChanges();
+                repoContact.Add(客戶聯絡人);
+                repoContact.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(repoCustomer.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
             return View(客戶聯絡人);
         }
 
@@ -80,12 +75,12 @@ namespace ParticeCustomer.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            客戶聯絡人 客戶聯絡人 = repoContact.Find(id.Value);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(repoCustomer.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
             return View(客戶聯絡人);
         }
 
@@ -98,14 +93,12 @@ namespace ParticeCustomer.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                    客戶聯絡人.已刪除 = false;
-                    db.Entry(客戶聯絡人).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-               
+                var db客戶聯絡人 = repoContact.UnitOfWork.Context;
+                db客戶聯絡人.Entry(客戶聯絡人).State = EntityState.Modified;
+                repoContact.UnitOfWork.Commit();
+                return RedirectToAction("Index");
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(repoCustomer.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
             return View(客戶聯絡人);
         }
 
@@ -116,7 +109,7 @@ namespace ParticeCustomer.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            客戶聯絡人 客戶聯絡人 = repoContact.Find(id.Value);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -129,26 +122,25 @@ namespace ParticeCustomer.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
-            //db.客戶聯絡人.Remove(客戶聯絡人);
-            客戶聯絡人.已刪除 = true;
-            db.SaveChanges();
+            客戶聯絡人 客戶聯絡人 = repoContact.Find(id);
+            repoContact.Delete(客戶聯絡人);
+            repoContact.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 
-        public ActionResult SearchContract(FormCollection collection)
-        {
-            var data = db.Database.SqlQuery<客戶聯絡人>(@"select * from dbo.客戶聯絡人 where 姓名 like @p0 
-                     ", string.Format("%{0}%",collection["myText"]));
-            return View("Index",data);
-        }
+        //public ActionResult SearchContract(FormCollection collection)
+        //{
+        //    var data = db.Database.SqlQuery<客戶聯絡人>(@"select * from dbo.客戶聯絡人 where 姓名 like @p0 
+        //             ", string.Format("%{0}%",collection["myText"]));
+        //    return View("Index",data);
+        //}
 
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                repoContact.UnitOfWork.Context.Dispose();
             }
             base.Dispose(disposing);
         }

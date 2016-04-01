@@ -13,6 +13,7 @@
         @Html.DisplayNameFor(model => model.客戶名稱) @Html.Label(":") <input type="text" name="Keyword" />
         <input type="submit" value="Search">
     }
+    @Html.ActionLink("Export to Excel", "ExcelExport")
 </p>
 <table class="table">
     <tr>

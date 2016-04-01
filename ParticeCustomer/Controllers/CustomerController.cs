@@ -9,23 +9,22 @@ using System.Web.Mvc;
 
 namespace ParticeCustomer.Controllers
 {
-    public class CustomerController : Controller
+    public class CustomerController : BaseController
     {
-        客戶資料Entities db = new 客戶資料Entities();
         // GET: Customer
         public ActionResult Index(string Keyword)
         {
-            var data = db.客戶資料.Where(p => p.已刪除 == false).ToList();
+            var data = repoCustomer.All();
             if (!string.IsNullOrEmpty(Keyword))
             {
-                data = db.客戶資料.Where(p => p.客戶名稱.Contains(Keyword)).ToList();
+                data = data.Where(p => p.客戶名稱.Contains(Keyword));
             }
             return View(data);
         }
 
         public ActionResult CusSummary()
         {
-            var data=db.CUSView.ToList();
+            var data=repoCusView.All();
             return View(data);
         }
 
@@ -35,7 +34,7 @@ namespace ParticeCustomer.Controllers
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var data = db.客戶資料.Find(id);
+            var data = repoCustomer.Find(id.Value);
             if (data == null)
                 return HttpNotFound();
             return View(data);
@@ -44,19 +43,19 @@ namespace ParticeCustomer.Controllers
         // GET: Customer/Create
         public ActionResult Create()
         {
+            ViewBag.CusType =repoCustomer.GetCusType();
             return View();
-        }
+        }  
 
         // POST: Customer/Create
         [HttpPost]
-        public ActionResult Create([Bind(Include = "客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶)
+        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類")] 客戶資料 客戶)
         {
             if (ModelState.IsValid)
             {
                 // TODO: Add insert logic here
-                客戶.已刪除 = false;
-                db.客戶資料.Add(客戶);
-                db.SaveChanges();
+                repoCustomer.Add(客戶);
+                repoCustomer.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
             
@@ -69,23 +68,24 @@ namespace ParticeCustomer.Controllers
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            var data=db.客戶資料.Find(id);
+            var data = repoCustomer.Find(id.Value);
             if (data == null)
                 return HttpNotFound();
+            ViewBag.CusType = repoCustomer.GetCusType();
             return View(data);
         }
 
         // POST: Customer/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, [Bind(Include = "客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶)
+        public ActionResult Edit(int id, [Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類")] 客戶資料 客戶)
         {
             if (ModelState.IsValid)
             {
                 // TODO: Add update logic here
-                客戶.已刪除 = false;
-                客戶.Id = id;
-                db.Entry(客戶).State = EntityState.Modified;
-                db.SaveChanges();
+                var dbcus = repoCustomer.UnitOfWork.Context;
+                dbcus.Entry(客戶).State = EntityState.Modified;
+                repoCustomer.UnitOfWork.Commit();
+
                 return RedirectToAction("Index");
             }
            
@@ -98,7 +98,7 @@ namespace ParticeCustomer.Controllers
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            var data = db.客戶資料.Find(id);
+            var data = repoCustomer.Find(id.Value);
             return View(data);
         }
 
@@ -112,18 +112,22 @@ namespace ParticeCustomer.Controllers
                 //var target = db.客戶資料.Find(id);
                 //db.客戶資料.Remove(target);
 
-                var target = db.客戶資料.FirstOrDefault(p => p.Id == id);
+                var target = repoCustomer.Find(id);
                 if (target == null)
                     return HttpNotFound();
-                target.已刪除 = true;
-
-                db.SaveChanges();
+                repoCustomer.Delete(target);
+                repoCustomer.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
             catch
             {
                 return HttpNotFound();
             }
+        }
+
+        public ActionResult ExcelExport()
+        {
+            return File( repoCustomer.GenerateDataTable(), "application/vnd.ms-excel","customers.xls");
         }
     }
 }
