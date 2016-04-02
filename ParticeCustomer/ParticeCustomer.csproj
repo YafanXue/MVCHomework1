@@ -239,6 +239,7 @@
     <Compile Include="Models\CustsExcelViewRepository.cs">
       <DependentUpon>IRepository.EF6.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CustsSearchViewModel.cs" />
     <Compile Include="Models\CUSView.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -441,6 +442,7 @@
     <Content Include="Views\Contact\Details.cshtml" />
     <Content Include="Views\Contact\Edit.cshtml" />
     <Content Include="Views\Contact\Index.cshtml" />
+    <Content Include="Views\Customer\Index2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

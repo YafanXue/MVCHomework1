@@ -1,23 +1,19 @@
-﻿@model ParticeCustomer.Models.CustsSearchViewModel
+﻿@model IEnumerable<ParticeCustomer.Models.CustsSearchViewModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Index2";
 }
 
-<h2>Index</h2>
+<h2>Index2</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
-    @using (Html.BeginForm("Index", "Customer"))
-    {
-        @Html.Label("客戶名稱") @Html.Label(":") <input type="text" name="Keyword" />
-        @Html.DropDownList("客戶分類", (IEnumerable<SelectListItem>)ViewBag.CusType, htmlAttributes: new { @class = "form-control" })
-        <input type="submit" value="Search">
-    }
-    @Html.ActionLink("Export to Excel", "ExcelExport")
 </p>
 <table class="table">
     <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Keyword)
+        </th>
         <th>
             @Html.DisplayNameFor(model => model.客戶名稱)
         </th>
@@ -36,11 +32,20 @@
         <th>
             @Html.DisplayNameFor(model => model.Email)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.已刪除)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.客戶分類)
+        </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model.Customers) {
+@foreach (var item in Model) {
     <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Keyword)
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.客戶名稱)
         </td>
@@ -58,6 +63,12 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.已刪除)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.客戶分類)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |

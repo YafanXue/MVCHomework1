@@ -12,14 +12,29 @@ namespace ParticeCustomer.Controllers
     public class CustomerController : BaseController
     {
         // GET: Customer
-        public ActionResult Index(string Keyword)
+        //public ActionResult Index(string Keyword)
+        //{
+        //    var data = repoCustomer.All();
+        //    if (!string.IsNullOrEmpty(Keyword))
+        //    {
+        //        data = data.Where(p => p.客戶名稱.Contains(Keyword));
+        //    }
+        //    ViewBag.CusType = repoCustomer.GetCusType();
+
+        //    return View(data);
+        //}
+        public ActionResult Index(CustsSearchViewModel CusSearch)
         {
+            ViewBag.CusType = repoCustomer.GetCusType();
             var data = repoCustomer.All();
-            if (!string.IsNullOrEmpty(Keyword))
-            {
-                data = data.Where(p => p.客戶名稱.Contains(Keyword));
-            }
-            return View(data);
+            if (!string.IsNullOrEmpty(CusSearch.Keyword) )
+                data = data.Where(p => p.客戶名稱.Contains(CusSearch.Keyword) );
+            if (CusSearch.客戶分類 != null)
+                data = data.Where(p => p.客戶分類 == CusSearch.客戶分類);
+            
+            CusSearch.Customers = data.ToList() ;
+
+            return View(CusSearch);
         }
 
         public ActionResult CusSummary()
