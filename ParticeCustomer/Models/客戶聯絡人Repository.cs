@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-	
+using System.IO;
+using ParticeCustomer.Controllers;
+
 namespace ParticeCustomer.Models
 {   
 	public  class 客戶聯絡人Repository : EFRepository<客戶聯絡人>, I客戶聯絡人Repository
@@ -22,6 +24,14 @@ namespace ParticeCustomer.Models
             entity.已刪除 = true;
            // base.Delete(entity);
         }
+
+        public Stream GenerateDataTable()
+        {
+            var data = RepositoryHelper.GetContactExcelViewRepository();
+
+            return NPOIExcel.RenderListToExcel(data.All().ToList());
+        }
+
     }
 
 	public  interface I客戶聯絡人Repository : IRepository<客戶聯絡人>

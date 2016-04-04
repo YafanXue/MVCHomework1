@@ -7,6 +7,34 @@ namespace ParticeCustomer.Models
 			return new EFUnitOfWork();
 		}		
 		
+		public static BanksExcelViewRepository GetBanksExcelViewRepository()
+		{
+			var repository = new BanksExcelViewRepository();
+			repository.UnitOfWork = GetUnitOfWork();
+			return repository;
+		}
+
+		public static BanksExcelViewRepository GetBanksExcelViewRepository(IUnitOfWork unitOfWork)
+		{
+			var repository = new BanksExcelViewRepository();
+			repository.UnitOfWork = unitOfWork;
+			return repository;
+		}		
+
+		public static ContactExcelViewRepository GetContactExcelViewRepository()
+		{
+			var repository = new ContactExcelViewRepository();
+			repository.UnitOfWork = GetUnitOfWork();
+			return repository;
+		}
+
+		public static ContactExcelViewRepository GetContactExcelViewRepository(IUnitOfWork unitOfWork)
+		{
+			var repository = new ContactExcelViewRepository();
+			repository.UnitOfWork = unitOfWork;
+			return repository;
+		}		
+
 		public static CustsExcelViewRepository GetCustsExcelViewRepository()
 		{
 			var repository = new CustsExcelViewRepository();

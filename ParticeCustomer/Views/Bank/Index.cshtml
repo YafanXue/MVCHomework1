@@ -7,7 +7,7 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("[Create New]", "Create")  @Html.ActionLink("[Export to Excel]", "ExcelExport")
     @using (Html.BeginForm("Index", "Bank"))
     {
         @Html.DisplayNameFor(model => model.銀行名稱) @Html.Label(" OR ") @Html.DisplayNameFor(model => model.帳戶名稱) <input type="text" name="Keyword" />

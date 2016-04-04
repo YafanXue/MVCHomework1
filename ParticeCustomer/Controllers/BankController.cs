@@ -132,5 +132,10 @@ namespace ParticeCustomer.Controllers
             return RedirectToAction("Index");
 
         }
+
+        public ActionResult ExcelExport()
+        {
+            return File(repoBank.GenerateDataTable(), "application/vnd.ms-excel", "banks.xls");
+        }
     }
 }

@@ -134,7 +134,10 @@ namespace ParticeCustomer.Controllers
         //             ", string.Format("%{0}%",collection["myText"]));
         //    return View("Index",data);
         //}
-
+        public ActionResult ExcelExport()
+        {
+            return File(repoContact.GenerateDataTable(), "application/vnd.ms-excel", "contacts.xls");
+        }
 
         protected override void Dispose(bool disposing)
         {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using System.IO;
+using ParticeCustomer.Controllers;
 
 namespace ParticeCustomer.Models
 {   
@@ -38,8 +39,13 @@ namespace ParticeCustomer.Models
         {
             entity.已刪除 = true;
         }
+        public Stream GenerateDataTable()
+        {
+            var data = RepositoryHelper.GetBanksExcelViewRepository();
 
-        
+            return NPOIExcel.RenderListToExcel(data.All().ToList());
+        }
+
     }
 
 	public  interface I客戶銀行資訊Repository : IRepository<客戶銀行資訊>
