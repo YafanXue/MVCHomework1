@@ -47,6 +47,37 @@ namespace ParticeCustomer.Models
             }
             return typeitems;
         }
+
+        public CustsContactViewModel GetCustomerContact(int id)
+        {
+            CustsContactViewModel data=new CustsContactViewModel();
+            data.Customer = this.Find(id);
+            var dbcontacts = RepositoryHelper.Get客戶聯絡人Repository();
+            var tempdata= dbcontacts.All().Where(p=>p.客戶Id== id);
+            List<ContactViewModel> contacts = new List<ContactViewModel>();
+                 
+            foreach (var item in tempdata)
+            {
+
+                //contacts.Concat(new[] {new ContactViewModel {Id= item.Id,
+                //CusId=item.客戶Id,姓名=item.姓名,Title=item.職稱,Mobile=item.手機,
+                //TEL=item.電話,已刪除= item.已刪除,Email = item.Email} });
+                var target = new ContactViewModel();
+                target.Id = item.Id;
+                target.CusId = item.客戶Id;
+                target.Email = item.Email;
+                target.Mobile = item.手機;
+                target.TEL = item.電話;
+                target.Title = item.職稱;
+                target.姓名 = item.姓名;
+                target.已刪除 = item.已刪除;
+                contacts.Add(target);
+
+
+            }
+            data.Contacts=contacts;
+            return data;
+        }
     }
 
 	public  interface I客戶資料Repository : IRepository<客戶資料>

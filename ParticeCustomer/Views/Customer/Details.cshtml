@@ -1,66 +1,145 @@
-﻿@model ParticeCustomer.Models.客戶資料
+﻿@model ParticeCustomer.Models.CustsContactViewModel
+
 
 @{
     ViewBag.Title = "Details";
 }
 
 <h2>Details</h2>
+@if (TempData["BatchUpMsg"] != null)
+{
+    <script>
+        alert('@TempData["BatchUpMsg"]');
+    </script>
+}
+@section scripts{
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+        //CS___8__locals1_data_0__Title
+        //CS$<>8__locals1.data[0].Title
+        $('input[type=text],[type=hidden]').each(function () {
+            $(this).attr('id', $(this).attr('id').replace('CS___8__locals1_', ''));
+            $(this).attr('name', $(this).attr('name').replace('CS$<>8__locals1.', ''));
+
+        });
+        $("span").each(function () {
+            if ($(this).attr('data-valmsg-for') !== null && $(this).attr('data-valmsg-for') !== undefined) {
+                $(this).attr('data-valmsg-for', $(this).attr('data-valmsg-for').replace('CS$<>8__locals1.', ''));
+            }
+            //
+            //$(this).attr('data-valmsg-for', $(this).attr('data-valmsg-for').replace('CS$<>8__locals1.', ''));
+        });
+     
+        })
+</script>
+    }
 
 <div>
     <h4>客戶資料</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.客戶名稱)
+            @Html.DisplayNameFor(model => model.Customer.客戶名稱)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.客戶名稱)
+            @Html.DisplayFor(model => model.Customer.客戶名稱)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.統一編號)
+            @Html.DisplayNameFor(model => model.Customer.統一編號)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.統一編號)
+            @Html.DisplayFor(model => model.Customer.統一編號)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.電話)
+            @Html.DisplayNameFor(model => model.Customer.電話)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.電話)
+            @Html.DisplayFor(model => model.Customer.電話)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.傳真)
+            @Html.DisplayNameFor(model => model.Customer.傳真)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.傳真)
+            @Html.DisplayFor(model => model.Customer.傳真)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.地址)
+            @Html.DisplayNameFor(model => model.Customer.地址)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.地址)
+            @Html.DisplayFor(model => model.Customer.地址)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.Customer.Email)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Email)
+            @Html.DisplayFor(model => model.Customer.Email)
         </dd>
 
     </dl>
 </div>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<table class="table">
+  
+    @{ var data = Model.Contacts.ToArray();}
+    @*@foreach (var item in Model.Contact)*@
+    @for (var i = 0; i < data.Length; i++)
+    {
+        @Html.HiddenFor(modelItem => data[i].Id)
+        @Html.HiddenFor(modelItem => data[i].CusId)
+        <tr>
+            <td>
+                @Html.EditorFor(modelItem => data[i].Title )
+                @Html.ValidationMessageFor(modelItem => data[i].Title, "", new { @class = "text-danger" })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => data[i].姓名)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => data[i].Email)
+            </td>
+            <td>
+                @Html.EditorFor(modelItem => data[i].Mobile)<br />
+                @Html.ValidationMessageFor(modelItem => data[i].Mobile, "", new { @class = "text-danger" })
+            </td>
+            <td>
+                @Html.EditorFor(modelItem => data[i].TEL)<br />
+                @Html.ValidationMessageFor(modelItem => data[i].TEL, "", new { @class = "text-danger" })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => data[i].客戶資料.客戶名稱)
+            </td>
+            @*<td>
+                @Html.ActionLink("Edit", "Edit", new { id = data[i].Id }) |
+                @Html.ActionLink("Details", "Details", new { id = data[i].Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = data[i].Id })
+            </td>*@
+        </tr>
+    }
+
+</table>
+<input type="submit" value="批次更新資料" />
+
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Customer.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+        }
+
+  

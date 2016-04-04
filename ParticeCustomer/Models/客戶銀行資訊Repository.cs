@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using System.IO;
 
 namespace ParticeCustomer.Models
 {   
@@ -37,6 +38,8 @@ namespace ParticeCustomer.Models
         {
             entity.已刪除 = true;
         }
+
+        
     }
 
 	public  interface I客戶銀行資訊Repository : IRepository<客戶銀行資訊>

@@ -12,17 +12,6 @@ namespace ParticeCustomer.Controllers
     public class CustomerController : BaseController
     {
         // GET: Customer
-        //public ActionResult Index(string Keyword)
-        //{
-        //    var data = repoCustomer.All();
-        //    if (!string.IsNullOrEmpty(Keyword))
-        //    {
-        //        data = data.Where(p => p.客戶名稱.Contains(Keyword));
-        //    }
-        //    ViewBag.CusType = repoCustomer.GetCusType();
-
-        //    return View(data);
-        //}
         public ActionResult Index(CustsSearchViewModel CusSearch)
         {
             ViewBag.CusType = repoCustomer.GetCusType();
@@ -49,10 +38,35 @@ namespace ParticeCustomer.Controllers
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var data = repoCustomer.Find(id.Value);
+            //var data = repoCustomer.Find(id.Value);
+            var data = repoCustomer.GetCustomerContact(id.Value);
             if (data == null)
                 return HttpNotFound();
             return View(data);
+        }
+
+        [HttpPost]
+        public ActionResult Details(int? id,IList<UpdateBatchContact> data)
+        {
+            int cusid=0;
+            if (ModelState.IsValid)
+            {
+                foreach(var item in data)
+                {
+                    var cus = repoContact.Find(item.Id);
+                    cus.職稱 = item.TITLE;
+                    cus.手機 = item.MOBILE;
+                    cus.電話 = item.TEL;
+                    cusid = item.CusId;
+                }
+                repoContact.UnitOfWork.Commit();
+                TempData["BatchUpMsg"] = "批次更新客戶聯絡人成功";
+            }
+            else
+                TempData["BatchUpMsg"] = "批次更新客戶聯絡人失敗";
+            ViewData.Model = repoCustomer.GetCustomerContact(id.Value);
+
+            return View();
         }
 
         // GET: Customer/Create

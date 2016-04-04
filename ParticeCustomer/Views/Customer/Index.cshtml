@@ -7,14 +7,33 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("[Create New]", "Create")    @Html.ActionLink("[Export to Excel]", "ExcelExport")
+
+
     @using (Html.BeginForm("Index", "Customer"))
     {
-        @Html.Label("客戶名稱") @Html.Label(":") <input type="text" name="Keyword" />
-        @Html.DropDownList("客戶分類", (IEnumerable<SelectListItem>)ViewBag.CusType, htmlAttributes: new { @class = "form-control" })
-        <input type="submit" value="Search">
+        <table>
+            <tr>
+                <td>
+                    @Html.Label("客戶名稱") @Html.Label(":")
+                </td>
+                <td colspan="2">
+                    <input type="text" name="Keyword" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Label("客戶分類:")
+                </td>
+                <td>
+                    @Html.DropDownList("客戶分類", (IEnumerable<SelectListItem>)ViewBag.CusType, htmlAttributes: new { @class = "form-control" })
+                </td>
+                <td>
+                <input type="submit" value="Search">
+            </td>
+        </tr>
+        </table>
     }
-    @Html.ActionLink("Export to Excel", "ExcelExport")
 </p>
 <table class="table">
     <tr>
