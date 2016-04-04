@@ -48,16 +48,14 @@ namespace ParticeCustomer.Controllers
         [HttpPost]
         public ActionResult Details(int? id,IList<UpdateBatchContact> data)
         {
-            int cusid=0;
             if (ModelState.IsValid)
             {
                 foreach(var item in data)
                 {
                     var cus = repoContact.Find(item.Id);
-                    cus.職稱 = item.TITLE;
-                    cus.手機 = item.MOBILE;
-                    cus.電話 = item.TEL;
-                    cusid = item.CusId;
+                    cus.職稱 = item.職稱;
+                    cus.手機 = item.手機;
+                    cus.電話 = item.電話;
                 }
                 repoContact.UnitOfWork.Commit();
                 TempData["BatchUpMsg"] = "批次更新客戶聯絡人成功";

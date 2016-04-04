@@ -9,8 +9,8 @@ namespace ParticeCustomer.Models
     {
         public 客戶資料 Customer { get; set; }
 
-        public ContactViewModel Contact { get; set; }
-        //public IEnumerable<客戶聯絡人> Contact { get; set; }
-        public IEnumerable<ContactViewModel> Contacts { get; set; }
+        //public ContactViewModel Contact { get; set; }
+        public IEnumerable<客戶聯絡人> Contacts { get; set; }
+        //public IEnumerable<ContactViewModel> Contacts { get; set; }
     }
 }

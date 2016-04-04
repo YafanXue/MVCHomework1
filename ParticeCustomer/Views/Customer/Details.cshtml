@@ -101,11 +101,11 @@
     @for (var i = 0; i < data.Length; i++)
     {
         @Html.HiddenFor(modelItem => data[i].Id)
-        @Html.HiddenFor(modelItem => data[i].CusId)
+        @Html.HiddenFor(modelItem => data[i].客戶Id)
         <tr>
             <td>
-                @Html.EditorFor(modelItem => data[i].Title )
-                @Html.ValidationMessageFor(modelItem => data[i].Title, "", new { @class = "text-danger" })
+                @Html.EditorFor(modelItem => data[i].職稱 )
+                @Html.ValidationMessageFor(modelItem => data[i].職稱, "", new { @class = "text-danger" })
             </td>
             <td>
                 @Html.DisplayFor(modelItem => data[i].姓名)
@@ -114,12 +114,12 @@
                 @Html.DisplayFor(modelItem => data[i].Email)
             </td>
             <td>
-                @Html.EditorFor(modelItem => data[i].Mobile)<br />
-                @Html.ValidationMessageFor(modelItem => data[i].Mobile, "", new { @class = "text-danger" })
+                @Html.EditorFor(modelItem => data[i].手機)<br />
+                @Html.ValidationMessageFor(modelItem => data[i].手機, "", new { @class = "text-danger" })
             </td>
             <td>
-                @Html.EditorFor(modelItem => data[i].TEL)<br />
-                @Html.ValidationMessageFor(modelItem => data[i].TEL, "", new { @class = "text-danger" })
+                @Html.EditorFor(modelItem => data[i].電話)<br />
+                @Html.ValidationMessageFor(modelItem => data[i].電話, "", new { @class = "text-danger" })
             </td>
             <td>
                 @Html.DisplayFor(modelItem => data[i].客戶資料.客戶名稱)
